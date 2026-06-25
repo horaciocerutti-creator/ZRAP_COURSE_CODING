@@ -1,0 +1,18 @@
+managed implementation in class zbp_00_r_pa9999 unique;
+strict ( 2 );
+
+define behavior for Z00_R_PA9999 alias PersonName
+persistent table z00_pa9999
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+  create ( authorization : global );
+  update;
+  delete;
+  field ( readonly ) Pernr, Begda, Endda;
+
+  mapping for Z00_PA9999 corresponding {
+    LastName = last_name;
+  }
+}

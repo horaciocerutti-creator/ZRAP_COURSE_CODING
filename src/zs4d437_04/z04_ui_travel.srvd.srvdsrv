@@ -1,0 +1,4 @@
+@EndUserText.label: 'SDEF'
+define service Z04_UI_TRAVEL {
+  expose Z04_C_Travel;
+}

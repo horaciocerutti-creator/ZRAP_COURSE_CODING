@@ -1,0 +1,4 @@
+@EndUserText.label: 'Z08_TRAVEL'
+define service Z08_TRAVEL {
+  expose Z08_C_TRAVEL as Travel;
+}

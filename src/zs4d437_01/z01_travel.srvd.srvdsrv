@@ -1,0 +1,4 @@
+@EndUserText.label: 'Flight Tavel (Service Definition)'
+define service Z01_TRAVEL {
+  expose Z01_C_TRAVEL as Travel;
+}

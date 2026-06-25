@@ -1,0 +1,70 @@
+managed implementation in class zbp_09_r_travel unique;
+strict ( 2 );
+
+with draft;
+
+define behavior for Z09_R_TRAVEL alias Travel
+persistent table z09_travel
+draft table z09_travel_d
+lock master
+total etag ChangedAt
+authorization master ( instance )
+etag master LocChangedAt
+early numbering
+{
+  create (authorization: global);
+  update (features: instance );
+  delete;
+
+  field ( readonly ) AgencyId, TravelId;
+  field ( readonly ) ChangedAt, ChangedBy, Status, LocChangedAt;
+  field ( mandatory ) EndDate;
+  field ( features: instance ) CustomerId, BeginDate;
+
+  action ( features: instance ) cancel_travel;
+
+  validation validateDescription on save { create; field description; }
+  validation validateCustomerId on save { create; field CustomerId; }
+  validation validateBeginDate on save
+  { create;
+    field BeginDate;
+  }
+
+  validation validateEndDate on save
+  { create;
+    field EndDate;
+  }
+
+  validation validateDateSequence on save
+  { create;
+    field BeginDate,
+    EndDate;
+  }
+
+  determination determineStatus on save { create; field Status; }
+
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation validateDescription;
+    validation validateCustomerId;
+    validation validateBeginDate; // nicht implementiert
+    validation validateEndDate;
+    validation validateDateSequence;
+  }
+
+  mapping for z09_travel corresponding
+    {
+      AgencyID    = agency_id;
+      TravelID    = travel_id;
+      CustomerID  = customer_id;
+      BeginDate   = begin_date;
+      EndDate     = end_date;
+      ChangedAt   = changed_at;
+      ChangedBy   = changed_by;
+      LocChangedAt = loc_changed_at;
+    }
+}

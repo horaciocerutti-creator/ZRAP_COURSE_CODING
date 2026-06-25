@@ -1,0 +1,67 @@
+managed implementation in class zbp_06_r_travel unique;
+strict ( 2 );
+
+with draft;
+
+define behavior for Z06_R_TRAVEL alias Travel
+persistent table z06_travel
+draft table z06_travel_d
+lock master
+total etag ChangedAt
+authorization master ( instance )
+etag master LocChangedAt //ChangedAt
+early numbering
+{
+  create ( authorization : global );
+  update ( features : instance);
+  delete;
+
+  action ( features : instance) cancel_travel;
+
+
+    draft action Activate optimized;
+    draft action Discard;
+    draft action Edit;
+    draft action Resume;
+    draft determine action Prepare {
+        validation validateDescription;
+        validation validateCustomer;
+        validation validateBeginDate;
+        validation validateEndDate;
+        validation validateDateSequence;
+
+    }
+//  field ( readonly:update, mandatory : create ) AgencyId, TravelId;
+
+
+  field ( readonly ) AgencyId, TravelId;
+  field ( readonly ) Status, ChangedAt, ChangedBy, LocChangedAt;
+  field ( mandatory ) Description/*, CustomerId, BeginDate*/, EndDate;
+
+  field ( features : instance ) CustomerId, BeginDate;
+
+//  For concept without draft:
+  validation validateDescription on save { create; field Description; }
+
+  validation validateCustomer on save { create; field CustomerId; }
+
+  validation validateBeginDate on save { create; field BeginDate; }
+  validation validateEndDate on save { create; field EndDate; }
+  validation validateDateSequence on save { create; field BeginDate, EndDate; }
+
+  determination determineStatus on modify { create; field Status; }
+
+  mapping for z06_travel corresponding
+  {
+    AgencyId    = agency_id;
+    TravelId    = travel_id;
+    CustomerId  = customer_id;
+    BeginDate   = begin_date;
+    EndDate     = end_date;
+    ChangedAt   = changed_at;
+    ChangedBy   = changed_by;
+    LocChangedAt= loc_changed_at;
+
+  }
+
+}
